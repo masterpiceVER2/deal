@@ -201,7 +201,6 @@
       border-color: var(--sky-300);
       box-shadow: 0 4px 16px rgba(14, 165, 233, 0.15);
     }
-    
 
     .product-row:active {
       transform: scale(0.98);
@@ -496,7 +495,7 @@
 
       let html = `
         <div class="section-label">
-          <span><i class="fa-solid fa-bolt"></i> ${currentCategory === '전체' ? '🔍 스마트 딜파인더 Pick!' : currentCategory}</span>
+          <span><i class="fa-solid fa-bolt"></i> ${currentCategory === '전체' ? 'TODAY 핫딜' : currentCategory}</span>
         </div>`;
 
       products.forEach(item => {
@@ -506,8 +505,10 @@
 
         const link = item['쿠팡링크'] || '#';
 
+        const rowId = item['ID'] || '';
+
         html += `
-        <a href="${link}" class="product-row" target="_blank" rel="noopener noreferrer">
+        <a href="${link}" class="product-row" id="product-${rowId}" target="_blank" rel="noopener noreferrer">
           <div class="row-thumb">${thumbHTML}</div>
           <div class="row-text">
             <span class="row-title">${item['상품명'] || '상품명 없음'}</span>
@@ -562,8 +563,38 @@
       });
     });
 
-    // 페이지 로드 시 데이터 가져오기
-    loadProducts();
+    // ============================================================
+    // URL 해시(#ID)로 해당 상품 자동 스크롤
+    // ============================================================
+    function scrollToHash() {
+      const hash = window.location.hash.replace('#', '');
+      if (!hash) return;
+
+      const target = document.getElementById('product-' + hash);
+      if (!target) return;
+
+      // sticky 헤더 + 필터바 높이만큼 오프셋
+      const offset = 100;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+
+      window.scrollTo({ top, behavior: 'smooth' });
+
+      // 하이라이트 깜빡임 효과
+      target.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+      target.style.boxShadow = '0 0 0 3px rgba(14, 165, 233, 0.4)';
+      target.style.borderColor = 'var(--sky-400)';
+
+      setTimeout(() => {
+        target.style.boxShadow = '';
+        target.style.borderColor = '';
+      }, 2000);
+    }
+
+    // hashchange 이벤트 (SPA 내 이동 시에도 동작)
+    window.addEventListener('hashchange', scrollToHash);
+
+    // 페이지 로드 시 데이터 가져오기 → 완료 후 해시 스크롤
+    loadProducts().then(scrollToHash);
   </script>
 
 </body>
