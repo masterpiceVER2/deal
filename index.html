@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
-    /* ===== Reset & Base ===== */
     *, *::before, *::after {
       margin: 0;
       padding: 0;
@@ -25,20 +24,15 @@
       --sky-500: #0ea5e9;
       --sky-600: #0284c7;
       --sky-700: #0369a1;
-      --sky-800: #075985;
-      --sky-900: #0c4a6e;
       --gray-50: #f8fafc;
       --gray-100: #f1f5f9;
       --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
       --gray-400: #94a3b8;
       --gray-500: #64748b;
       --gray-600: #475569;
-      --gray-700: #334155;
       --gray-800: #1e293b;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-      --shadow-md: 0 4px 12px rgba(14, 165, 233, 0.15);
-      --shadow-lg: 0 8px 24px rgba(14, 165, 233, 0.2);
-      --radius: 16px;
+      --coupang-red: #e4002b;
     }
 
     html {
@@ -51,327 +45,299 @@
       background: var(--sky-50);
       color: var(--gray-800);
       min-height: 100vh;
-      padding-bottom: 80px;
+      padding-bottom: 64px;
     }
 
-    /* ===== Header ===== */
+    /* ===== Header (Thin) ===== */
     .header {
       background: linear-gradient(135deg, var(--sky-500) 0%, var(--sky-600) 100%);
-      padding: 40px 20px 48px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+      padding: 14px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
 
-    .header::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.1) 0%, transparent 60%);
-      pointer-events: none;
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .header-logo {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 64px;
-      height: 64px;
+      width: 28px;
+      height: 28px;
       background: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
-      border-radius: 18px;
-      margin-bottom: 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
     .header-logo i {
-      font-size: 28px;
+      font-size: 13px;
       color: #fff;
     }
 
     .header h1 {
-      font-size: 1.6rem;
+      font-size: 1rem;
       font-weight: 900;
       color: #fff;
-      letter-spacing: -0.5px;
-      margin-bottom: 6px;
+      letter-spacing: -0.3px;
     }
 
-    .header p {
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.85);
-      font-weight: 400;
+    /* ===== Filter Bar (Thin) ===== */
+    .filter-bar {
+      background: #fff;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 8px 0;
+      position: sticky;
+      top: 56px;
+      z-index: 40;
     }
 
-    /* ===== Wavy Divider ===== */
-    .wave-divider {
-      display: block;
-      width: 100%;
-      margin-top: -1px;
-      line-height: 0;
+    .filter-scroll {
+      display: flex;
+      gap: 6px;
+      padding: 0 14px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
 
-    .wave-divider svg {
-      display: block;
-      width: 100%;
-      height: 32px;
+    .filter-scroll::-webkit-scrollbar {
+      display: none;
     }
 
-    /* ===== Main Content ===== */
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 24px 16px;
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      border-radius: 16px;
+      border: 1.5px solid var(--gray-200);
+      background: #fff;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
-    .section-title {
-      font-size: 0.8rem;
-      font-weight: 700;
+    .filter-chip i {
+      font-size: 0.65rem;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--sky-400);
       color: var(--sky-600);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 16px;
-      padding-left: 4px;
+      background: var(--sky-50);
     }
 
-    /* ===== Link Buttons ===== */
-    .link-list {
+    .filter-chip.active {
+      background: var(--sky-500);
+      color: #fff;
+      border-color: var(--sky-500);
+    }
+
+    /* ===== Product List ===== */
+    .product-list {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 12px 14px 24px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-bottom: 32px;
+      gap: 10px;
     }
 
-    .link-btn {
+    /* Section Label */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 2px 2px;
+    }
+
+    .section-label span {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--sky-600);
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gray-200);
+    }
+
+    /* ===== Row Item ===== */
+    .product-row {
       display: flex;
       align-items: center;
       gap: 14px;
       width: 100%;
-      min-height: 64px;
-      padding: 16px 20px;
+      padding: 12px 14px;
       background: #fff;
       border: 1.5px solid var(--sky-100);
-      border-radius: var(--radius);
+      border-radius: 14px;
       text-decoration: none;
-      color: var(--gray-800);
-      font-size: 1rem;
-      font-weight: 600;
+      color: inherit;
       cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--shadow-sm);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       position: relative;
-      overflow: hidden;
     }
 
-    .link-btn::after {
-      content: '';
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 8px;
-      height: 8px;
-      border-right: 2px solid var(--gray-400);
-      border-bottom: 2px solid var(--gray-400);
-      transform: translateY(-50%) rotate(-45deg);
-      transition: all 0.25s ease;
-    }
-
-    .link-btn:hover,
-    .link-btn:active {
-      transform: scale(1.03);
+    .product-row:hover {
+      transform: scale(1.02);
       border-color: var(--sky-300);
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 4px 16px rgba(14, 165, 233, 0.15);
     }
 
-    .link-btn:hover::after,
-    .link-btn:active::after {
-      border-color: var(--sky-500);
-      right: 16px;
-    }
-
-    .link-btn:active {
+    .product-row:active {
       transform: scale(0.98);
     }
 
-    .link-icon {
+    /* Thumbnail */
+    .row-thumb {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--gray-100);
+    }
+
+    .row-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .row-thumb .thumb-placeholder {
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      flex-shrink: 0;
-      font-size: 1.1rem;
+      background: linear-gradient(135deg, var(--gray-100), var(--sky-50));
+      color: var(--gray-300);
+      font-size: 1.2rem;
     }
 
-    .link-text {
+    /* Text */
+    .row-text {
+      flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
     }
 
-    .link-text span {
-      font-size: 1rem;
+    .row-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .row-highlight {
+      font-size: 0.73rem;
+      color: var(--coupang-red);
       font-weight: 600;
       line-height: 1.3;
-    }
-
-    .link-text small {
-      font-size: 0.75rem;
-      color: var(--gray-500);
-      font-weight: 400;
-    }
-
-    /* Icon Color Variants */
-    .icon-deals {
-      background: linear-gradient(135deg, #fef3c7, #fde68a);
-      color: #d97706;
-    }
-
-    .icon-tech {
-      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-      color: #2563eb;
-    }
-
-    .icon-home {
-      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-      color: #059669;
-    }
-
-    .icon-fashion {
-      background: linear-gradient(135deg, #fce7f3, #fbcfe8);
-      color: #db2777;
-    }
-
-    .icon-food {
-      background: linear-gradient(135deg, #ffedd5, #fed7aa);
-      color: #ea580c;
-    }
-
-    .icon-baby {
-      background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
-      color: #4f46e5;
-    }
-
-    .icon-blog {
-      background: linear-gradient(135deg, #e0f2fe, #bae6fd);
-      color: #0284c7;
-    }
-
-    .icon-insta {
-      background: linear-gradient(135deg, #fce7f3, #f5d0fe);
-      color: #c026d3;
-    }
-
-    /* ===== Featured Deal Card ===== */
-    .deal-card {
-      background: linear-gradient(135deg, var(--sky-500) 0%, var(--sky-600) 100%);
-      border-radius: var(--radius);
-      padding: 24px;
-      margin-bottom: 32px;
-      color: #fff;
-      position: relative;
+      white-space: nowrap;
       overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .deal-card::before {
-      content: '';
-      position: absolute;
-      top: -30px;
-      right: -30px;
-      width: 100px;
-      height: 100px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-    }
-
-    .deal-badge {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .deal-card h3 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-      line-height: 1.4;
-    }
-
-    .deal-card p {
-      font-size: 0.85rem;
-      opacity: 0.9;
-      line-height: 1.5;
-      margin-bottom: 16px;
-    }
-
-    .deal-cta {
-      display: inline-flex;
+    /* Arrow */
+    .row-arrow {
+      flex-shrink: 0;
+      width: 20px;
+      display: flex;
       align-items: center;
-      gap: 8px;
-      background: #fff;
-      color: var(--sky-600);
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      text-decoration: none;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      justify-content: center;
+      color: var(--gray-400);
+      font-size: 0.75rem;
+      transition: color 0.2s ease, transform 0.2s ease;
     }
 
-    .deal-cta:hover,
-    .deal-cta:active {
-      transform: scale(1.05);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    }
-
-    .deal-cta:active {
-      transform: scale(0.97);
-    }
-
-    /* ===== Stats ===== */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 32px;
-    }
-
-    .stat-card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 16px 12px;
-      text-align: center;
-      border: 1.5px solid var(--sky-100);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .stat-card i {
-      font-size: 1.2rem;
+    .product-row:hover .row-arrow {
       color: var(--sky-500);
-      margin-bottom: 6px;
+      transform: translateX(2px);
     }
 
-    .stat-number {
-      font-size: 1.3rem;
-      font-weight: 900;
-      color: var(--sky-700);
-      line-height: 1.2;
+    /* ===== Loading & Error States ===== */
+    .loading-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--gray-400);
     }
 
-    .stat-label {
-      font-size: 0.7rem;
-      color: var(--gray-500);
+    .loading-state i {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .loading-state .spinner {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-state p {
+      font-size: 0.8rem;
       font-weight: 500;
-      margin-top: 2px;
+    }
+
+    .error-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--coupang-red);
+    }
+
+    .error-state i {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .error-state p {
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--gray-400);
+    }
+
+    .empty-state i {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .empty-state p {
+      font-size: 0.8rem;
+      font-weight: 500;
     }
 
     /* ===== Footer Disclaimer ===== */
@@ -383,36 +349,33 @@
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border-top: 1px solid var(--sky-200);
-      padding: 14px 20px;
+      border-top: 1px solid var(--gray-200);
+      padding: 12px 20px;
       text-align: center;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--gray-500);
       line-height: 1.5;
       z-index: 100;
     }
 
-    /* ===== Responsive (Tablet+) ===== */
+    /* ===== Responsive ===== */
     @media (min-width: 640px) {
-      .header {
-        padding: 56px 24px 64px;
+      .product-list {
+        padding: 16px 24px 32px;
+        gap: 12px;
       }
 
-      .header h1 {
-        font-size: 2rem;
+      .row-thumb {
+        width: 64px;
+        height: 64px;
       }
 
-      .container {
-        padding: 32px 24px;
+      .row-title {
+        font-size: 0.95rem;
       }
 
-      .link-btn {
-        min-height: 72px;
-        padding: 18px 24px;
-      }
-
-      .wave-divider svg {
-        height: 48px;
+      .product-row {
+        padding: 14px 18px;
       }
     }
   </style>
@@ -421,141 +384,186 @@
 
   <!-- Header -->
   <header class="header">
-    <div class="header-logo">
-      <i class="fa-solid fa-magnifying-glass-dollar"></i>
+    <div class="header-inner">
+      <div class="header-logo">
+        <i class="fa-solid fa-magnifying-glass-dollar"></i>
+      </div>
+      <h1>Smart DealFinder</h1>
     </div>
-    <h1>Smart DealFinder</h1>
-    <p>매일 엄선한 최저가 핫딜을 만나보세요</p>
   </header>
 
-  <!-- Wave Divider -->
-  <div class="wave-divider">
-    <svg viewBox="0 0 1440 48" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,0 C360,48 1080,48 1440,0 L1440,0 L0,0 Z" fill="#0284c7"/>
-    </svg>
-  </div>
-
-  <!-- Main -->
-  <main class="container">
-
-    <!-- Featured Deal -->
-    <div class="deal-card">
-      <div class="deal-badge"><i class="fa-solid fa-fire"></i> &nbsp;오늘의 핫딜</div>
-      <h3>매일 업데이트되는 특가 상품을 확인하세요!</h3>
-      <p>인기 카테고리별 최저가 비교부터 타임딜까지, 놓치면 후회할 가격을 모아봤어요.</p>
-      <a href="#" class="deal-cta">
-        <i class="fa-solid fa-bolt"></i>
-        핫딜 보러가기
-      </a>
+  <!-- Category Filter Bar -->
+  <nav class="filter-bar">
+    <div class="filter-scroll" id="filterScroll">
+      <button class="filter-chip active" data-category="전체"><i class="fa-solid fa-fire"></i> 전체</button>
+      <button class="filter-chip" data-category="가전/디지털"><i class="fa-solid fa-laptop"></i> 가전/디지털</button>
+      <button class="filter-chip" data-category="홈/리빙"><i class="fa-solid fa-couch"></i> 홈/리빙</button>
+      <button class="filter-chip" data-category="패션/뷰티"><i class="fa-solid fa-shirt"></i> 패션/뷰티</button>
+      <button class="filter-chip" data-category="식품/건강"><i class="fa-solid fa-utensils"></i> 식품/건강</button>
+      <button class="filter-chip" data-category="유아/키즈"><i class="fa-solid fa-baby-carriage"></i> 유아/키즈</button>
     </div>
+  </nav>
 
-    <!-- Stats -->
-    <div class="stats">
-      <div class="stat-card">
-        <i class="fa-solid fa-tags"></i>
-        <div class="stat-number">500+</div>
-        <div class="stat-label">엄선된 딜</div>
-      </div>
-      <div class="stat-card">
-        <i class="fa-solid fa-users"></i>
-        <div class="stat-number">1.2만</div>
-        <div class="stat-label">구독자</div>
-      </div>
-      <div class="stat-card">
-        <i class="fa-solid fa-star"></i>
-        <div class="stat-number">4.9</div>
-        <div class="stat-label">만족도</div>
-      </div>
+  <!-- Product List (dynamically populated) -->
+  <main class="product-list" id="productList">
+    <div class="loading-state" id="loadingState">
+      <i class="fa-solid fa-circle-notch spinner"></i>
+      <p>상품을 불러오는 중...</p>
     </div>
-
-    <!-- Category Links -->
-    <div class="section-title">카테고리별 추천</div>
-    <div class="link-list">
-      <a href="#" class="link-btn">
-        <div class="link-icon icon-deals">
-          <i class="fa-solid fa-percent"></i>
-        </div>
-        <div class="link-text">
-          <span>오늘의 특가 모음</span>
-          <small>매일 갱신되는 최저가 상품</small>
-        </div>
-      </a>
-      <a href="#" class="link-btn">
-        <div class="link-icon icon-tech">
-          <i class="fa-solid fa-laptop"></i>
-        </div>
-        <div class="link-text">
-          <span>가전 / 디지털</span>
-          <small>전자제품 & IT 기기 핫딜</small>
-        </div>
-      </a>
-      <a href="#" class="link-btn">
-        <div class="link-icon icon-home">
-          <i class="fa-solid fa-couch"></i>
-        </div>
-        <div class="link-text">
-          <span>홈 / 리빙</span>
-          <small>생활용품 & 인테리어 특가</small>
-        </div>
-      </a>
-      <a href="#" class="link-btn">
-        <div class="link-icon icon-fashion">
-          <i class="fa-solid fa-shirt"></i>
-        </div>
-        <div class="link-text">
-          <span>패션 / 뷰티</span>
-          <small>의류 & 화장품 할인 정보</small>
-        </div>
-      </a>
-      <a href="#" class="link-btn">
-        <div class="link-icon icon-food">
-          <i class="fa-solid fa-utensils"></i>
-        </div>
-        <div class="link-text">
-          <span>식품 / 건강</span>
-          <small>먹거리 & 건강식품 세일</small>
-        </div>
-      </a>
-      <a href="#" class="link-btn">
-        <div class="link-icon icon-baby">
-          <i class="fa-solid fa-baby-carriage"></i>
-        </div>
-        <div class="link-text">
-          <span>유아 / 키즈</span>
-          <small>육아용품 & 장난감 특가</small>
-        </div>
-      </a>
-    </div>
-
-    <!-- Social Links -->
-    <div class="section-title">SNS & 블로그</div>
-    <div class="link-list">
-      <a href="#" class="link-btn">
-        <div class="link-icon icon-blog">
-          <i class="fa-solid fa-blog"></i>
-        </div>
-        <div class="link-text">
-          <span>블로그</span>
-          <small>상세 리뷰 & 비교 분석</small>
-        </div>
-      </a>
-      <a href="#" class="link-btn">
-        <div class="link-icon icon-insta">
-          <i class="fa-brands fa-instagram"></i>
-        </div>
-        <div class="link-text">
-          <span>인스타그램</span>
-          <small>@smart_dealfinder</small>
-        </div>
-      </a>
-    </div>
-
   </main>
 
-  <!-- Fixed Footer Disclaimer -->
+  <!-- Fixed Footer -->
   <footer class="footer-disclaimer">
     이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
   </footer>
+
+  <script>
+    // ============================================================
+    // 구글 시트 CSV 링크 (이 주소만 교체하면 됩니다)
+    // ============================================================
+    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT2a-r4dnUOyWChfPnVtf5-D3Gxnw24j5VnCgrK2GLC0HwuUI55lxnFCO6SMr0GMFYVTA7nssCGiEU7/pub?gid=0&single=true&output=csv';
+
+    // ============================================================
+    // CSV 파싱 (따옴표 안의 쉼표 처리)
+    // ============================================================
+    function parseCSV(csv) {
+      const lines = csv.split('\n').filter(line => line.trim() !== '');
+      if (lines.length < 2) return [];
+
+      const headers = parseCSVLine(lines[0]);
+      const rows = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = parseCSVLine(lines[i]);
+        const row = {};
+        headers.forEach((header, idx) => {
+          row[header.trim()] = (values[idx] || '').trim();
+        });
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    function parseCSVLine(line) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (inQuotes) {
+          if (char === '"' && line[i + 1] === '"') {
+            current += '"';
+            i++;
+          } else if (char === '"') {
+            inQuotes = false;
+          } else {
+            current += char;
+          }
+        } else {
+          if (char === '"') {
+            inQuotes = true;
+          } else if (char === ',') {
+            result.push(current);
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+      }
+      result.push(current);
+      return result;
+    }
+
+    // ============================================================
+    // 상품 목록 렌더링
+    // ============================================================
+    let allProducts = [];
+    let currentCategory = '전체';
+
+    function renderProducts(products) {
+      const container = document.getElementById('productList');
+
+      if (products.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-box-open"></i>
+            <p>등록된 상품이 없습니다.</p>
+          </div>`;
+        return;
+      }
+
+      let html = `
+        <div class="section-label">
+          <span><i class="fa-solid fa-bolt"></i> ${currentCategory === '전체' ? 'TODAY 핫딜' : currentCategory}</span>
+        </div>`;
+
+      products.forEach(item => {
+        const thumbHTML = item['이미지링크']
+          ? `<img src="${item['이미지링크']}" alt="${item['상품명']}" loading="lazy">`
+          : `<div class="thumb-placeholder"><i class="fa-solid fa-image"></i></div>`;
+
+        const link = item['쿠팡링크'] || '#';
+
+        html += `
+        <a href="${link}" class="product-row" target="_blank" rel="noopener noreferrer">
+          <div class="row-thumb">${thumbHTML}</div>
+          <div class="row-text">
+            <span class="row-title">${item['상품명'] || '상품명 없음'}</span>
+            <span class="row-highlight">${item['설명'] || ''}</span>
+          </div>
+          <div class="row-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        </a>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function filterByCategory(category) {
+      currentCategory = category;
+      if (category === '전체') {
+        renderProducts(allProducts);
+      } else {
+        renderProducts(allProducts.filter(p => p['카테고리'] === category));
+      }
+    }
+
+    // ============================================================
+    // 데이터 로드
+    // ============================================================
+    async function loadProducts() {
+      const container = document.getElementById('productList');
+
+      try {
+        const response = await fetch(SHEET_CSV_URL);
+        if (!response.ok) throw new Error('네트워크 오류');
+
+        const csv = await response.text();
+        allProducts = parseCSV(csv);
+        filterByCategory(currentCategory);
+      } catch (err) {
+        container.innerHTML = `
+          <div class="error-state">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p>상품을 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.</p>
+          </div>`;
+      }
+    }
+
+    // ============================================================
+    // 필터 칩 이벤트
+    // ============================================================
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        filterByCategory(chip.dataset.category);
+      });
+    });
+
+    // 페이지 로드 시 데이터 가져오기
+    loadProducts();
+  </script>
 
 </body>
 </html>
