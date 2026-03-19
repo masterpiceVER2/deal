@@ -145,6 +145,87 @@
       border-color: var(--sky-500);
     }
 
+    /* ===== Search Bar ===== */
+    .search-bar {
+      background: #fff;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 8px 14px;
+      position: sticky;
+      top: 95px;
+      z-index: 35;
+    }
+
+    .search-wrapper {
+      max-width: 500px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .search-wrapper i.search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      color: var(--gray-400);
+      pointer-events: none;
+      transition: color 0.2s ease;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 36px 10px 34px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      color: var(--gray-800);
+      background: var(--gray-50);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input::placeholder {
+      color: var(--gray-400);
+    }
+
+    .search-input:focus {
+      border-color: var(--sky-400);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+
+    .search-input:focus ~ i.search-icon {
+      color: var(--sky-500);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: var(--gray-200);
+      border-radius: 50%;
+      font-size: 0.6rem;
+      color: var(--gray-500);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+    }
+
+    .search-clear:hover {
+      background: var(--gray-300);
+    }
+
+    .search-clear.visible {
+      display: flex;
+    }
+
     /* ===== Product List ===== */
     .product-list {
       max-width: 500px;
@@ -251,6 +332,12 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .row-id {
+      font-size: inherit;
+      font-weight: inherit;
+      color: inherit;
     }
 
     .row-highlight {
@@ -404,6 +491,15 @@
     </div>
   </nav>
 
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <div class="search-wrapper">
+      <input type="text" class="search-input" id="searchInput" placeholder="상품명을 검색하세요...">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <button class="search-clear" id="searchClear"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+  </div>
+
   <!-- Product List (dynamically populated) -->
   <main class="product-list" id="productList">
     <div class="loading-state" id="loadingState">
@@ -480,22 +576,50 @@
     // ============================================================
     let allProducts = [];
     let currentCategory = '전체';
+    let currentSearch = '';
+
+    function getFilteredProducts() {
+      let filtered = allProducts;
+
+      if (currentCategory !== '전체') {
+        filtered = filtered.filter(p => p['카테고리'] === currentCategory);
+      }
+
+      if (currentSearch) {
+        const query = currentSearch.toLowerCase();
+        filtered = filtered.filter(p =>
+          (p['ID'] || '').toLowerCase().includes(query) ||
+          (p['상품명'] || '').toLowerCase().includes(query) ||
+          (p['설명'] || '').toLowerCase().includes(query)
+        );
+      }
+
+      return filtered;
+    }
+
+    function applyFilters() {
+      renderProducts(getFilteredProducts());
+    }
 
     function renderProducts(products) {
       const container = document.getElementById('productList');
 
       if (products.length === 0) {
+        const msg = currentSearch
+          ? `'${currentSearch}'에 대한 검색 결과가 없습니다.`
+          : '등록된 상품이 없습니다.';
+        const icon = currentSearch ? 'fa-magnifying-glass' : 'fa-box-open';
         container.innerHTML = `
           <div class="empty-state">
-            <i class="fa-solid fa-box-open"></i>
-            <p>등록된 상품이 없습니다.</p>
+            <i class="fa-solid ${icon}"></i>
+            <p>${msg}</p>
           </div>`;
         return;
       }
 
       let html = `
         <div class="section-label">
-          <span><i class="fa-solid fa-bolt"></i> ${currentCategory === '전체' ? 'TODAY 핫딜' : currentCategory}</span>
+          <span><i class="fa-solid fa-bolt"></i> ${currentCategory === '전체' ? 'smart_dealfinder 제품 보기' : currentCategory}</span>
         </div>`;
 
       products.forEach(item => {
@@ -511,7 +635,7 @@
         <a href="${link}" class="product-row" id="product-${rowId}" target="_blank" rel="noopener noreferrer">
           <div class="row-thumb">${thumbHTML}</div>
           <div class="row-text">
-            <span class="row-title">${item['상품명'] || '상품명 없음'}</span>
+            <span class="row-title">${item['ID'] ? `<span class="row-id">[${item['ID']}]</span> ` : ''}${item['상품명'] || '상품명 없음'}</span>
             <span class="row-highlight">${item['설명'] || ''}</span>
           </div>
           <div class="row-arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -523,11 +647,7 @@
 
     function filterByCategory(category) {
       currentCategory = category;
-      if (category === '전체') {
-        renderProducts(allProducts);
-      } else {
-        renderProducts(allProducts.filter(p => p['카테고리'] === category));
-      }
+      applyFilters();
     }
 
     // ============================================================
@@ -561,6 +681,26 @@
         chip.classList.add('active');
         filterByCategory(chip.dataset.category);
       });
+    });
+
+    // ============================================================
+    // 검색 이벤트
+    // ============================================================
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+
+    searchInput.addEventListener('input', () => {
+      currentSearch = searchInput.value.trim();
+      searchClear.classList.toggle('visible', currentSearch.length > 0);
+      applyFilters();
+    });
+
+    searchClear.addEventListener('click', () => {
+      searchInput.value = '';
+      currentSearch = '';
+      searchClear.classList.remove('visible');
+      applyFilters();
+      searchInput.focus();
     });
 
     // ============================================================
