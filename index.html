@@ -659,7 +659,7 @@
         if (!response.ok) throw new Error('네트워크 오류');
 
         const csv = await response.text();
-        allProducts = parseCSV(csv);
+        allProducts = parseCSV(csv).reverse();
         filterByCategory(currentCategory);
       } catch (err) {
         container.innerHTML = `
