@@ -45,7 +45,6 @@
       background: var(--sky-50);
       color: var(--gray-800);
       min-height: 100vh;
-      padding-bottom: 64px;
     }
 
     /* ===== Header (Thin) ===== */
@@ -86,6 +85,18 @@
       font-weight: 900;
       color: #fff;
       letter-spacing: -0.3px;
+    }
+
+    /* ===== Upper Disclaimer (수정됨) ===== */
+    .footer-disclaimer {
+      background: var(--sky-100);
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--sky-700);
+      line-height: 1.4;
+      border-bottom: 1px solid var(--sky-200);
     }
 
     /* ===== Filter Bar (Thin) ===== */
@@ -427,22 +438,6 @@
       font-weight: 500;
     }
 
-    /* ===== Footer Disclaimer ===== */
-    .footer-disclaimer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--sky-600);
-      padding: 10px 20px;
-      text-align: center;
-      font-size: 0.7rem;
-      font-weight: 500;
-      color: #fff;
-      line-height: 1.5;
-      z-index: 100;
-    }
-
     /* ===== Responsive ===== */
     @media (min-width: 640px) {
       .product-list {
@@ -467,7 +462,6 @@
 </head>
 <body>
 
-  <!-- Header -->
   <header class="header">
     <div class="header-inner">
       <div class="header-logo">
@@ -477,7 +471,10 @@
     </div>
   </header>
 
-  <!-- Category Filter Bar -->
+  <footer class="footer-disclaimer">
+    이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+  </footer>
+
   <nav class="filter-bar">
     <div class="filter-scroll" id="filterScroll">
       <button class="filter-chip active" data-category="전체"><i class="fa-solid fa-fire"></i> 전체</button>
@@ -489,7 +486,6 @@
     </div>
   </nav>
 
-  <!-- Search Bar -->
   <div class="search-bar">
     <div class="search-wrapper">
       <input type="text" class="search-input" id="searchInput" placeholder="상품명을 검색하세요...">
@@ -498,7 +494,6 @@
     </div>
   </div>
 
-  <!-- Product List (dynamically populated) -->
   <main class="product-list" id="productList">
     <div class="loading-state" id="loadingState">
       <i class="fa-solid fa-circle-notch spinner"></i>
@@ -506,14 +501,9 @@
     </div>
   </main>
 
-  <!-- Fixed Footer -->
-  <footer class="footer-disclaimer">
-    이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
-  </footer>
-
   <script>
     // ============================================================
-    // 구글 시트 CSV 링크 (이 주소만 교체하면 됩니다)
+    // 구글 시트 CSV 링크
     // ============================================================
     const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT2a-r4dnUOyWChfPnVtf5-D3Gxnw24j5VnCgrK2GLC0HwuUI55lxnFCO6SMr0GMFYVTA7nssCGiEU7/pub?gid=0&single=true&output=csv';
 
@@ -626,7 +616,6 @@
           : `<div class="thumb-placeholder"><i class="fa-solid fa-image"></i></div>`;
 
         const link = item['쿠팡링크'] || '#';
-
         const rowId = item['ID'] || '';
 
         html += `
@@ -702,7 +691,7 @@
     });
 
     // ============================================================
-    // URL 해시(#ID)로 해당 상품 자동 스크롤
+    // URL 해시(#ID)로 해당 상품 자동 스크롤 (오프셋 수정 완료)
     // ============================================================
     function scrollToHash() {
       const hash = window.location.hash.replace('#', '');
@@ -711,8 +700,8 @@
       const target = document.getElementById('product-' + hash);
       if (!target) return;
 
-      // sticky 헤더 + 필터바 높이만큼 오프셋
-      const offset = 100;
+      // 안내 문구 추가로 늘어난 높이를 반영해 140으로 변경
+      const offset = 140;
       const top = target.getBoundingClientRect().top + window.scrollY - offset;
 
       window.scrollTo({ top, behavior: 'smooth' });
@@ -728,10 +717,9 @@
       }, 2000);
     }
 
-    // hashchange 이벤트 (SPA 내 이동 시에도 동작)
     window.addEventListener('hashchange', scrollToHash);
 
-    // 페이지 로드 시 데이터 가져오기 → 완료 후 해시 스크롤
+    // 로드 후 실행
     loadProducts().then(scrollToHash);
   </script>
 
